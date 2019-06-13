@@ -13,7 +13,7 @@ _SUBJECT = "A email for DNS resolvers' TCP-fallback (please ignore)"
 _MAIN_BODY = ("This is a research project on investigating "
 "DNS resolvers' TCP-fallback capability. The project is conducted by "
 "Jerome Mao and Prof. Michael Rabinovich from Case Western Reserve University "
-"(jxm959@case.edu")
+"(jxm959@case.edu)")
 
 _ENCODED_DOMAIN_NAME = "{cpyname}{gltd}-research.yumi.ipl.eecs.case.edu"
 
