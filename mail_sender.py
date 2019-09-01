@@ -46,11 +46,16 @@ class MailSender(object):
         '''
         smtp_success = False
         ssl_smtp_success = False
+        print("remote_endpoint", remote_endpoint)
+        print("sender", sender)
+        print("receiver", receiver)
+        
         try:
             with smtplib.SMTP(host=remote_endpoint) as receiving_server:
                 receiving_server.sendmail(sender, receiver, message)
                 smtp_success = True
-        except:
+        except Exception as e:
+            print(e)
             pass
         if smtp_success:
             return True
@@ -60,7 +65,8 @@ class MailSender(object):
             with smtplib.SMTP_SSL(host=remote_endpoint) as receiving_server:
                 receiving_server.sendmail(sender, receiver, message)
                 ssl_smtp_success = True
-        except:
+        except Exception as e:
+            print(e)
             return False
         return smtp_success or ssl_smtp_success
 
@@ -68,7 +74,8 @@ class MailSender(object):
         '''
         the main loop in sending emails
         '''
-        self._executor.submit(MailSender.mail_send_workflow, target)
+        # self._executor.submit(MailSender.mail_send_workflow, target)
+        MailSender.mail_send_workflow(target)
 
     @staticmethod
     def mail_send_workflow(domain_name: str) -> bool:
@@ -84,7 +91,7 @@ class MailSender(object):
         mail_send_success = False
         while not mail_send_success and smtp_names:
             _, mail_server_address = smtp_names.pop()
-            mail_tuple = mail_generator.generate_mail_from_domain(mail_server_address)
+            mail_tuple = mail_generator.generate_mail_from_domain(domain_name)
             mail_send_success = MailSender.mail_send(mail_server_address, *mail_tuple)
 
         if not mail_send_success:
@@ -105,10 +112,13 @@ def driver(website_list_dir: str, max_threads_num=20) -> None:
             mail_sender.do_send(website)
 
 if __name__ == "__main__":
-    assert len(sys.argv) == 3, "Need a path to the website lists and a path to log"
-    workers = os.cpu_count()
-    full_path = os.path.expanduser(sys.argv[1])
-    path_to_log = os.path.expanduser(sys.argv[2])
+    # assert len(sys.argv) == 3, "Need a path to the website lists and a path to log"
+    # workers = os.cpu_count()
+    # full_path = os.path.expanduser(sys.argv[1])
+    # path_to_log = os.path.expanduser(sys.argv[2])
 
-    _init_logger(path_to_log)
-    driver(full_path, max_threads_num=workers)
+    # _init_logger(path_to_log)
+    # driver(full_path, max_threads_num=workers)
+
+    mail_sender = MailSender(1)
+    mail_sender.do_send("cnn.com")
